@@ -1,0 +1,15 @@
+/**
+\mainpage Tracter GPL
+
+\section intro Introduction
+
+Tracter is a modular real time signal processing system.  It defines a
+framework for a directed graph of plugins that each do (typically)
+small amounts of computation.
+
+Tracter GPL is a supplementary package of components that link with
+Gnu General Public Licensed packages.  The GPL stipulates that these
+components must themselves be GPL.  The core of tracter is BSD, hence
+the separate package.
+
+*/
