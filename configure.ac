@@ -60,6 +60,7 @@ AC_CONFIG_FILES(
 	[Makefile
 	 tracter-gpl.pc
 	 Doxyfile
+	 doc/Makefile
 	 src/Makefile]
 )
 AC_OUTPUT

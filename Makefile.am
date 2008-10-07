@@ -6,7 +6,7 @@
 #
 
 SUBDIRS = src
-DIST_SUBDIRS = src
+DIST_SUBDIRS = src doc
 EXTRA_DIST = Doxyfile.in tracter-gpl.pc.in
 
 pkgconfigdir = $(libdir)/pkgconfig
