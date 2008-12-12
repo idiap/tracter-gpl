@@ -1,15 +1,42 @@
 /**
-\mainpage Tracter GPL
+\mainpage The Tracter GPL Home Page
 
 \section intro Introduction
 
-Tracter is a modular real time signal processing system.  It defines a
-framework for a directed graph of plugins that each do (typically)
-small amounts of computation.
+Tracter is a data flow framework.  It was written initially for doing
+speech signal processing in the context of the <a
+href="juicer.html">Juicer ASR engine</a>.  It has developed into more
+of a wrapper for other packages.
 
 Tracter GPL is a supplementary package of components that link with
 Gnu General Public Licensed packages.  The GPL stipulates that these
 components must themselves be GPL.  The core of tracter is BSD, hence
 the separate package.
+
+\section use Usage
+
+The general idea is that you can link against tracter-gpl instead of
+tracter to get the functionality of tracter with added GPL value.  At
+the time of writing, the two modules in tracter-gpl duplicate
+functionality of BSD versions in tracter.  Linking with tracter-gpl
+should yield the GPL ones in the resulting executable, even if the BSD
+ones are in tracter.
+
+\section download Obtaining the source code
+
+Tracter GPL is available <strong>here</strong>.  By it's nature as a
+supplementary library, tracter-gpl consists entirely of external
+dependencies:
+ - The core <a href="tracter">tracter</a> library provides data-flow
+functionality and connectivity.
+ - <a href="http://www.fftw.org/">FFTW</a> is a high performance FFT
+library.
+ - <a href="http://www.mega-nerd.com/SRC/">samplerate</a>, or SRC, is
+a resampling library.  It claims to be quite fast and quite accurate.
+ .
+
+\section authors Author
+
+Phil Garner
 
 */

@@ -7,6 +7,7 @@
 
 #include <cassert>
 #include <fftw3.h>
+
 #include "Fourier.h"
 
 /*
@@ -27,9 +28,9 @@
  *
  * From PNG:
  *
- * FFT_MEASURE is the default.  Floating point precision my arse; it's
- * enough to give 3rd/4th significant digit effects in features.  It's
- * not right for experiments that you want to repeat.
+ * FFT_MEASURE is the default.  It's enough to give 3rd/4th
+ * significant digit effects in features.  It's not right for
+ * experiments that you want to repeat.
  */
 
 namespace FourierFFTW

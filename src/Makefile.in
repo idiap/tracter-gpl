@@ -22,6 +22,7 @@
 #
 
 
+
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
 VPATH = @srcdir@
@@ -44,12 +45,15 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
+noinst_PROGRAMS = $(am__EXEEXT_1) $(am__EXEEXT_2)
 @WITH_FFTW3F_TRUE@am__append_1 = FourierFFTW.cpp
 @WITH_FFTW3F_TRUE@am__append_2 = @FFTW3F_CFLAGS@
-@WITH_SAMPLERATE_TRUE@am__append_3 = Resample.cpp
-@WITH_SAMPLERATE_TRUE@am__append_4 = @SAMPLERATE_CFLAGS@
+@WITH_FFTW3F_TRUE@am__append_3 = fft
+@WITH_SAMPLERATE_TRUE@am__append_4 = ResampleSRC.cpp
+@WITH_SAMPLERATE_TRUE@am__append_5 = @SAMPLERATE_CFLAGS@
+@WITH_SAMPLERATE_TRUE@am__append_6 = resample
 subdir = src
-DIST_COMMON = $(am__pkginclude_HEADERS_DIST) $(srcdir)/Makefile.am \
+DIST_COMMON = $(pkginclude_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -68,14 +72,25 @@ am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(pkgincludedir)"
 libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libtracter_gpl_la_DEPENDENCIES =
-am__libtracter_gpl_la_SOURCES_DIST = Resample.cpp FourierFFTW.cpp
-@WITH_SAMPLERATE_TRUE@am__objects_1 = libtracter_gpl_la-Resample.lo
-am__objects_2 = $(am__objects_1)
-@WITH_FFTW3F_TRUE@am__objects_3 = libtracter_gpl_la-FourierFFTW.lo
-am_libtracter_gpl_la_OBJECTS = $(am__objects_2) $(am__objects_3)
+am__libtracter_gpl_la_SOURCES_DIST = FourierFFTW.cpp ResampleSRC.cpp
+am__objects_1 =
+@WITH_FFTW3F_TRUE@am__objects_2 = libtracter_gpl_la-FourierFFTW.lo
+@WITH_SAMPLERATE_TRUE@am__objects_3 =  \
+@WITH_SAMPLERATE_TRUE@	libtracter_gpl_la-ResampleSRC.lo
+am_libtracter_gpl_la_OBJECTS = $(am__objects_1) $(am__objects_2) \
+	$(am__objects_3)
 nodist_libtracter_gpl_la_OBJECTS =
 libtracter_gpl_la_OBJECTS = $(am_libtracter_gpl_la_OBJECTS) \
 	$(nodist_libtracter_gpl_la_OBJECTS)
+@WITH_FFTW3F_TRUE@am__EXEEXT_1 = fft$(EXEEXT)
+@WITH_SAMPLERATE_TRUE@am__EXEEXT_2 = resample$(EXEEXT)
+PROGRAMS = $(noinst_PROGRAMS)
+am_fft_OBJECTS = fft.$(OBJEXT)
+fft_OBJECTS = $(am_fft_OBJECTS)
+fft_DEPENDENCIES = libtracter-gpl.la
+am_resample_OBJECTS = resample-resample.$(OBJEXT)
+resample_OBJECTS = $(am_resample_OBJECTS)
+resample_DEPENDENCIES = libtracter-gpl.la
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -88,9 +103,10 @@ CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --tag=CXX --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 SOURCES = $(libtracter_gpl_la_SOURCES) \
-	$(nodist_libtracter_gpl_la_SOURCES)
-DIST_SOURCES = $(am__libtracter_gpl_la_SOURCES_DIST)
-am__pkginclude_HEADERS_DIST = Resample.h
+	$(nodist_libtracter_gpl_la_SOURCES) $(fft_SOURCES) \
+	$(resample_SOURCES)
+DIST_SOURCES = $(am__libtracter_gpl_la_SOURCES_DIST) $(fft_SOURCES) \
+	$(resample_SOURCES)
 pkgincludeHEADERS_INSTALL = $(INSTALL_HEADER)
 HEADERS = $(pkginclude_HEADERS)
 ETAGS = etags
@@ -209,15 +225,21 @@ sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 lib_LTLIBRARIES = libtracter-gpl.la
-TRACTER_GPL_SOURCES = $(am__append_3)
+TRACTER_GPL_SOURCES = 
 pkginclude_HEADERS = $(TRACTER_GPL_SOURCES:.cpp=.h)
-libtracter_gpl_la_SOURCES = $(TRACTER_GPL_SOURCES) $(am__append_1)
+libtracter_gpl_la_SOURCES = $(TRACTER_GPL_SOURCES) $(am__append_1) \
+	$(am__append_4)
 
 # Blank, but added to later
 nodist_libtracter_gpl_la_SOURCES = 
-libtracter_gpl_la_CPPFLAGS = @TRACTER_CFLAGS@
-libtracter_gpl_la_CFLAGS = $(am__append_2) $(am__append_4)
-libtracter_gpl_la_LIBADD = @TRACTER_LIBS@
+libtracter_gpl_la_CPPFLAGS = @TRACTER_CFLAGS@ $(am__append_2) \
+	$(am__append_5)
+libtracter_gpl_la_LIBADD = @TRACTER_LIBS@ @SAMPLERATE_LIBS@
+resample_CPPFLAGS = @TRACTER_CFLAGS@ @SAMPLERATE_CFLAGS@
+resample_SOURCES = resample.cpp
+resample_LDADD = libtracter-gpl.la
+fft_SOURCES = fft.cpp
+fft_LDADD = libtracter-gpl.la
 all: all-am
 
 .SUFFIXES:
@@ -281,14 +303,29 @@ clean-libLTLIBRARIES:
 libtracter-gpl.la: $(libtracter_gpl_la_OBJECTS) $(libtracter_gpl_la_DEPENDENCIES) 
 	$(CXXLINK) -rpath $(libdir) $(libtracter_gpl_la_LDFLAGS) $(libtracter_gpl_la_OBJECTS) $(libtracter_gpl_la_LIBADD) $(LIBS)
 
+clean-noinstPROGRAMS:
+	@list='$(noinst_PROGRAMS)'; for p in $$list; do \
+	  f=`echo $$p|sed 's/$(EXEEXT)$$//'`; \
+	  echo " rm -f $$p $$f"; \
+	  rm -f $$p $$f ; \
+	done
+fft$(EXEEXT): $(fft_OBJECTS) $(fft_DEPENDENCIES) 
+	@rm -f fft$(EXEEXT)
+	$(CXXLINK) $(fft_LDFLAGS) $(fft_OBJECTS) $(fft_LDADD) $(LIBS)
+resample$(EXEEXT): $(resample_OBJECTS) $(resample_DEPENDENCIES) 
+	@rm -f resample$(EXEEXT)
+	$(CXXLINK) $(resample_LDFLAGS) $(resample_OBJECTS) $(resample_LDADD) $(LIBS)
+
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
 
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fft.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtracter_gpl_la-FourierFFTW.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtracter_gpl_la-Resample.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtracter_gpl_la-ResampleSRC.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/resample-resample.Po@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
@@ -311,19 +348,33 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LTCXXCOMPILE) -c -o $@ $<
 
-libtracter_gpl_la-Resample.lo: Resample.cpp
-@am__fastdepCXX_TRUE@	if $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libtracter_gpl_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libtracter_gpl_la-Resample.lo -MD -MP -MF "$(DEPDIR)/libtracter_gpl_la-Resample.Tpo" -c -o libtracter_gpl_la-Resample.lo `test -f 'Resample.cpp' || echo '$(srcdir)/'`Resample.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libtracter_gpl_la-Resample.Tpo" "$(DEPDIR)/libtracter_gpl_la-Resample.Plo"; else rm -f "$(DEPDIR)/libtracter_gpl_la-Resample.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Resample.cpp' object='libtracter_gpl_la-Resample.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libtracter_gpl_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libtracter_gpl_la-Resample.lo `test -f 'Resample.cpp' || echo '$(srcdir)/'`Resample.cpp
-
 libtracter_gpl_la-FourierFFTW.lo: FourierFFTW.cpp
 @am__fastdepCXX_TRUE@	if $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libtracter_gpl_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libtracter_gpl_la-FourierFFTW.lo -MD -MP -MF "$(DEPDIR)/libtracter_gpl_la-FourierFFTW.Tpo" -c -o libtracter_gpl_la-FourierFFTW.lo `test -f 'FourierFFTW.cpp' || echo '$(srcdir)/'`FourierFFTW.cpp; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libtracter_gpl_la-FourierFFTW.Tpo" "$(DEPDIR)/libtracter_gpl_la-FourierFFTW.Plo"; else rm -f "$(DEPDIR)/libtracter_gpl_la-FourierFFTW.Tpo"; exit 1; fi
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FourierFFTW.cpp' object='libtracter_gpl_la-FourierFFTW.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libtracter_gpl_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libtracter_gpl_la-FourierFFTW.lo `test -f 'FourierFFTW.cpp' || echo '$(srcdir)/'`FourierFFTW.cpp
+
+libtracter_gpl_la-ResampleSRC.lo: ResampleSRC.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libtracter_gpl_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libtracter_gpl_la-ResampleSRC.lo -MD -MP -MF "$(DEPDIR)/libtracter_gpl_la-ResampleSRC.Tpo" -c -o libtracter_gpl_la-ResampleSRC.lo `test -f 'ResampleSRC.cpp' || echo '$(srcdir)/'`ResampleSRC.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libtracter_gpl_la-ResampleSRC.Tpo" "$(DEPDIR)/libtracter_gpl_la-ResampleSRC.Plo"; else rm -f "$(DEPDIR)/libtracter_gpl_la-ResampleSRC.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ResampleSRC.cpp' object='libtracter_gpl_la-ResampleSRC.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libtracter_gpl_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libtracter_gpl_la-ResampleSRC.lo `test -f 'ResampleSRC.cpp' || echo '$(srcdir)/'`ResampleSRC.cpp
+
+resample-resample.o: resample.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(resample_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT resample-resample.o -MD -MP -MF "$(DEPDIR)/resample-resample.Tpo" -c -o resample-resample.o `test -f 'resample.cpp' || echo '$(srcdir)/'`resample.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/resample-resample.Tpo" "$(DEPDIR)/resample-resample.Po"; else rm -f "$(DEPDIR)/resample-resample.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='resample.cpp' object='resample-resample.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(resample_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o resample-resample.o `test -f 'resample.cpp' || echo '$(srcdir)/'`resample.cpp
+
+resample-resample.obj: resample.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(resample_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT resample-resample.obj -MD -MP -MF "$(DEPDIR)/resample-resample.Tpo" -c -o resample-resample.obj `if test -f 'resample.cpp'; then $(CYGPATH_W) 'resample.cpp'; else $(CYGPATH_W) '$(srcdir)/resample.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/resample-resample.Tpo" "$(DEPDIR)/resample-resample.Po"; else rm -f "$(DEPDIR)/resample-resample.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='resample.cpp' object='resample-resample.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(resample_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o resample-resample.obj `if test -f 'resample.cpp'; then $(CYGPATH_W) 'resample.cpp'; else $(CYGPATH_W) '$(srcdir)/resample.cpp'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -429,7 +480,7 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(LTLIBRARIES) $(HEADERS)
+all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(HEADERS)
 installdirs:
 	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(pkgincludedir)"; do \
 	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
@@ -461,7 +512,7 @@ maintainer-clean-generic:
 clean: clean-am
 
 clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
-	mostlyclean-am
+	clean-noinstPROGRAMS mostlyclean-am
 
 distclean: distclean-am
 	-rm -rf ./$(DEPDIR)
@@ -511,18 +562,18 @@ uninstall-am: uninstall-info-am uninstall-libLTLIBRARIES \
 	uninstall-pkgincludeHEADERS
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
-	clean-libLTLIBRARIES clean-libtool ctags distclean \
-	distclean-compile distclean-generic distclean-libtool \
-	distclean-tags distdir dvi dvi-am html html-am info info-am \
-	install install-am install-data install-data-am install-exec \
-	install-exec-am install-info install-info-am \
-	install-libLTLIBRARIES install-man install-pkgincludeHEADERS \
-	install-strip installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
-	pdf pdf-am ps ps-am tags uninstall uninstall-am \
-	uninstall-info-am uninstall-libLTLIBRARIES \
-	uninstall-pkgincludeHEADERS
+	clean-libLTLIBRARIES clean-libtool clean-noinstPROGRAMS ctags \
+	distclean distclean-compile distclean-generic \
+	distclean-libtool distclean-tags distdir dvi dvi-am html \
+	html-am info info-am install install-am install-data \
+	install-data-am install-exec install-exec-am install-info \
+	install-info-am install-libLTLIBRARIES install-man \
+	install-pkgincludeHEADERS install-strip installcheck \
+	installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-compile \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	tags uninstall uninstall-am uninstall-info-am \
+	uninstall-libLTLIBRARIES uninstall-pkgincludeHEADERS
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
