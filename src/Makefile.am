@@ -30,11 +30,15 @@ libtracter_gpl_la_CPPFLAGS += @SAMPLERATE_CFLAGS@
 noinst_PROGRAMS += resample
 endif
 
-libtracter_gpl_la_LIBADD = @TRACTER_LIBS@ @SAMPLERATE_LIBS@
+libtracter_gpl_la_LIBADD = \
+	@FFTW3F_LIBS@ \
+	@SAMPLERATE_LIBS@ \
+	@TRACTER_LIBS@
 
 resample_CPPFLAGS = @TRACTER_CFLAGS@ @SAMPLERATE_CFLAGS@
 resample_SOURCES = resample.cpp
 resample_LDADD = libtracter-gpl.la
 
+fft_CPPFLAGS = @TRACTER_CFLAGS@ @FFTW3F_CFLAGS@
 fft_SOURCES = fft.cpp
 fft_LDADD = libtracter-gpl.la

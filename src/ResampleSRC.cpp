@@ -41,7 +41,7 @@ Tracter::Resample::Resample(
     assert(src_is_valid_ratio(r.data.src_ratio));
 
     int error;
-    r.state = src_new(0, 1, &error);
+    r.state = src_new(SRC_SINC_BEST_QUALITY, 1, &error);
     if (!r.state)
         throw Exception("%s: SRC error %s\n",
                         mObjectName, src_strerror(error));
@@ -73,6 +73,9 @@ void Tracter::Resample::MinSize(int iSize, int iReadBack, int iReadAhead)
     ResampleData& r = *mResampleData;
     int minSize = (int)((double)iSize / r.data.src_ratio + 0.5);
     PluginObject::MinSize(mInput, minSize, 0, 0);
+
+    /* It's too complcated without an intermediate array */
+    r.resample.resize(iSize);
 }
 
 void Tracter::Resample::Reset(bool iPropagate)
@@ -89,12 +92,12 @@ int Tracter::Resample::Fetch(IndexType iIndex, CacheArea& iOutputArea)
     CacheArea inputArea;
 
     ResampleData& r = *mResampleData;
+    IndexType index = (IndexType)((double)iIndex / r.data.src_ratio);
     int nGet = (int)((double)iOutputArea.Length() / r.data.src_ratio);
-    int nGot = mInput->Read(inputArea, iIndex, nGet);
+    int nGot = mInput->Read(inputArea, index, nGet);
     int nOut = (int)((double)nGot * r.data.src_ratio);
-
-    /* It's too complcated without an intermediate array */
-    r.resample.resize(nOut);
+    Verbose(2, "i=%ld Get=%d Got=%d Out=%d len0=%d len1=%d\n",
+            index, nGet, nGot, nOut, inputArea.len[0], inputArea.len[1]);
 
     /* Run it over the first circular block */
     r.data.data_in = mInput->GetPointer(inputArea.offset);
