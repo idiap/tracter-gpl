@@ -38,6 +38,9 @@ namespace FourierFFTW
     static int sInstanceCount = 0;
 };
 
+/**
+ * The class specific data for FourierFFTW
+ */
 struct Tracter::FourierData
 {
     void* IData;

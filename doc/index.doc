@@ -1,14 +1,14 @@
 /**
-\mainpage The Tracter GPL Home Page
+\mainpage The Tracter-GPL Home Page
 
 \section intro Introduction
 
 Tracter is a data flow framework.  It was written initially for doing
-speech signal processing in the context of the <a
-href="juicer.html">Juicer ASR engine</a>.  It has developed into more
-of a wrapper for other packages.
+speech signal processing in the context of <a
+href="http://www.idiap.ch/software/juicer">Juicer</a>.  It has
+developed into more of a wrapper for other packages.
 
-Tracter GPL is a supplementary package of components that link with
+Tracter-GPL is a supplementary package of components that link with
 Gnu General Public Licensed packages.  The GPL stipulates that these
 components must themselves be GPL.  The core of tracter is BSD, hence
 the separate package.
@@ -24,11 +24,12 @@ ones are in tracter.
 
 \section download Obtaining the source code
 
-Tracter GPL is available <strong>here</strong>.  By it's nature as a
-supplementary library, tracter-gpl consists entirely of external
-dependencies:
- - The core <a href="tracter">tracter</a> library provides data-flow
-functionality and connectivity.
+Tracter-GPL is available <a
+href="http://www.idiap.ch/software/tracter-gpl/sources">here</a>.  By
+it's nature as a supplementary library, tracter-gpl is simply wrappers
+for external dependencies:
+ - The core <a href="http://www.idiap.ch/software/tracter">tracter</a>
+library provides data-flow functionality and connectivity.
  - <a href="http://www.fftw.org/">FFTW</a> is a high performance FFT
 library.
  - <a href="http://www.mega-nerd.com/SRC/">samplerate</a>, or SRC, is
@@ -37,6 +38,6 @@ a resampling library.  It claims to be quite fast and quite accurate.
 
 \section authors Author
 
-Phil Garner
+<a href="http://www.idiap.ch/~pgarner">Phil Garner</a>
 
 */
