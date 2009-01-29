@@ -32,8 +32,9 @@ AS_IF(
   [AC_ERROR([Required library TRACTER not found])]
 )
 
-# fftw3f PKG_CHECK_MODULES(FFTW3F, fftw3f >= 3.1.2, ac_cv_fftw3f=1,
-ac_cv_fftw3f=0) AS_IF(
+# fftw3f
+PKG_CHECK_MODULES(FFTW3F, fftw3f >= 3.1.2, ac_cv_fftw3f=1, ac_cv_fftw3f=0)
+AS_IF(
   [test "$ac_cv_fftw3f" = 1],
   [AC_DEFINE([HAVE_FFTW3F], [1], [Define if you have libfftw3f.])]
 )
