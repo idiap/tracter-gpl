@@ -27,17 +27,17 @@ struct Tracter::ResampleData
  *  - TargetFreq (16000)  Target sample frequency.
  */
 Tracter::Resample::Resample(
-    Plugin<float>* iInput, const char* iObjectName
+    Component<float>* iInput, const char* iObjectName
 )
-    : UnaryPlugin<float, float>(iInput)
 {
     mObjectName = iObjectName;
-    mSampleFreq = GetEnv("TargetFreq", 16000);
+    mInput = iInput;
 
+    double targetRate = GetEnv("TargetRate", 16000);
     mResampleData = new ResampleData;
     ResampleData& r = *mResampleData;
 
-    r.data.src_ratio = (double)mSampleFreq / mInput->GetSampleFreq();
+    r.data.src_ratio = targetRate / mInput->FrameRate();
     assert(src_is_valid_ratio(r.data.src_ratio));
 
     int error;
@@ -45,6 +45,8 @@ Tracter::Resample::Resample(
     if (!r.state)
         throw Exception("%s: SRC error %s\n",
                         mObjectName, src_strerror(error));
+
+    Connect(mInput, 1.0f / r.data.src_ratio);
     Verbose(1, "SRC Initialised\n");
 }
 
@@ -66,13 +68,13 @@ void Tracter::Resample::MinSize(int iSize, int iReadBack, int iReadAhead)
 {
     // First call the base class to resize this cache
     assert(iSize > 0);
-    PluginObject::MinSize(iSize, iReadBack, iReadAhead);
+    ComponentBase::MinSize(iSize, iReadBack, iReadAhead);
 
     // Set the input buffer big enough to service largest output requests
     assert(mInput);
     ResampleData& r = *mResampleData;
     int minSize = (int)((double)iSize / r.data.src_ratio + 0.5);
-    PluginObject::MinSize(mInput, minSize, 0, 0);
+    ComponentBase::MinSize(mInput, minSize, 0, 0);
 
     /* It's too complcated without an intermediate array */
     r.resample.resize(iSize);
@@ -82,7 +84,7 @@ void Tracter::Resample::Reset(bool iPropagate)
 {
     ResampleData& r = *mResampleData;
     src_reset(r.state);
-    UnaryPlugin<float, float>::Reset(iPropagate);
+    CachedComponent<float>::Reset(iPropagate);
 }
 
 int Tracter::Resample::Fetch(IndexType iIndex, CacheArea& iOutputArea)
