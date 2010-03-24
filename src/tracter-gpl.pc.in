@@ -1,0 +1,12 @@
+# pkgconfig file for/from CMake
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: Tracter (GPL modules)
+Description: GPL modules for the tracter data flow framework
+Version: @VERSION@
+Requires: @TRACTER_GPL_REQUIRES@
+Libs: -L${libdir}
+Cflags: -I${includedir}
