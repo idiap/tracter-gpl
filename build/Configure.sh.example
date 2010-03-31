@@ -1,0 +1,14 @@
+#!/bin/zsh
+#
+# This is an example based on what I use to configure tracter-gpl
+# under linux.
+#
+# Phil Garner
+# March 2010
+#
+
+cmake \
+    -D CMAKE_INSTALL_PREFIX=$HOME/local \
+    -D CMAKE_CXX_FLAGS_DEBUG="-g -Wall -Werror" \
+    -D CMAKE_BUILD_TYPE=debug \
+    ..

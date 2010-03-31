@@ -5,7 +5,7 @@
 
 Tracter is a data flow framework.  It was written initially for doing
 speech signal processing in the context of <a
-href="http://www.idiap.ch/software/juicer">Juicer</a>.  It has
+href="http://juicer.amiproject.org/juicer">Juicer</a>.  It has
 developed into more of a wrapper for other packages.
 
 Tracter-GPL is a supplementary package of components that link with
@@ -25,10 +25,10 @@ ones are in tracter.
 \section download Obtaining the source code
 
 Tracter-GPL is available <a
-href="http://www.idiap.ch/software/tracter-gpl/sources">here</a>.  By
+href="http://juicer.amiproject.org/tracter-gpl/sources">here</a>.  By
 it's nature as a supplementary library, tracter-gpl is simply wrappers
 for external dependencies:
- - The core <a href="http://www.idiap.ch/software/tracter">tracter</a>
+ - The core <a href="http://juicer.amiproject.org/tracter">tracter</a>
 library provides data-flow functionality and connectivity.
  - <a href="http://www.fftw.org/">FFTW</a> is a high performance FFT
 library.
@@ -39,5 +39,15 @@ a resampling library.  It claims to be quite fast and quite accurate.
 \section authors Author
 
 <a href="http://www.idiap.ch/~pgarner">Phil Garner</a>
+
+\section list Mailing list
+
+There is no mailing list specifically for tracter, but it is covered
+by the juicer mailing list.  To join send a message to
+juicer-list-request@idiap.ch with the word "subscribe" in the body.
+It is <a
+href="http://www.gnu.org/software/mailman/index.html">mailman</a>
+managed and understands all the usual commands.
+
 
 */

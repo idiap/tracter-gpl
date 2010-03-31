@@ -9,10 +9,9 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([Tracter-GPL], [0.1.0])
+AC_INIT([Tracter-GPL], [0.2.0])
 AM_INIT_AUTOMAKE([-Wall -Werror])
 AC_CONFIG_SRCDIR([src/FourierFFTW.cpp])
-AC_CONFIG_HEADER([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
 # Checks for programs.
@@ -23,7 +22,7 @@ AC_PROG_LIBTOOL
 
 # Check for Tracter
 PKG_CHECK_MODULES(
-    TRACTER, tracter >= 0.2.0, ac_cv_tracter=1, ac_cv_tracter=0
+    TRACTER, tracter >= 0.5.0, ac_cv_tracter=1, ac_cv_tracter=0
 )
 AC_SUBST(TRACTER_CFLAGS)
 AC_SUBST(TRACTER_LIBS)
