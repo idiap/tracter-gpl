@@ -10,7 +10,7 @@ cmake_minimum_required(VERSION 2.6)
 
 # This project's name
 project(tracter-gpl)
-set(VERSION 0.2.0)
+set(VERSION 1.0)
 
 # Find packages
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")

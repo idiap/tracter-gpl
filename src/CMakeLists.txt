@@ -7,7 +7,7 @@ list(APPEND PKGCONFIG_REQUIRES tracter)
 if(${FFTW3F_FOUND})
   list(APPEND SOURCES FourierFFTW.cpp)
   add_executable(fft fft.cpp)
-  target_link_libraries(fft shared-lib)
+  target_link_libraries(fft static-lib)
   include_directories(${FFTW3F_INCLUDE_DIRS})
   list(APPEND PKGCONFIG_REQUIRES fftw3f)
 endif(${FFTW3F_FOUND})
@@ -16,27 +16,49 @@ endif(${FFTW3F_FOUND})
 if(${SAMPLERATE_FOUND})
   list(APPEND SOURCES ResampleSRC.cpp)
   add_executable(resample resample.cpp)
-  target_link_libraries(resample shared-lib)
+  target_link_libraries(resample static-lib)
   include_directories(${SAMPLERATE_INCLUDE_DIRS})
   list(APPEND PKGCONFIG_REQUIRES samplerate)
 endif(${SAMPLERATE_FOUND})
 
-#add_library(static-lib STATIC ${SOURCES})
-#set_target_properties(static-lib PROPERTIES OUTPUT_NAME "tracter-gpl")
+# Things to install
+set(INSTALL_TARGETS
+  static-lib
+)
 
-add_library(shared-lib SHARED ${SOURCES})
-set_target_properties(shared-lib
-  PROPERTIES OUTPUT_NAME "tracter-gpl"
-  )
-target_link_libraries(shared-lib
+# A little wordy, but allows static lib also with the same syntax
+set(TARGET_LIBS
   ${TRACTER_LIBRARIES}
   ${FFTW3F_LIBRARIES}
   ${SAMPLERATE_LIBRARIES}
+)
+
+# Static library
+add_library(static-lib STATIC ${SOURCES})
+set_target_properties(static-lib
+  PROPERTIES OUTPUT_NAME "tracter-gpl"
+)
+target_link_libraries(static-lib ${TARGET_LIBS})
+
+# Shared library
+set(USE_SHARED $ENV{USE_SHARED}
+  CACHE BOOLEAN "Whether to build shared library"
   )
+if (USE_SHARED)
+  add_library(shared-lib SHARED ${SOURCES})
+  set_target_properties(shared-lib
+    PROPERTIES OUTPUT_NAME "tracter-gpl"
+    )
+  target_link_libraries(shared-lib ${TARGET_LIBS})
+  list(APPEND INSTALL_TARGETS shared-lib)
+endif (USE_SHARED)
 
 install(
-  TARGETS shared-lib
+  TARGETS ${INSTALL_TARGETS}
+  RUNTIME DESTINATION bin
   LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+  PUBLIC_HEADER DESTINATION include/tracter
   )
 
 # pkgconfig install lines

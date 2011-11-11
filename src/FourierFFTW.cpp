@@ -78,7 +78,9 @@ Tl* Allocate(int iSize, Tc** ioCData, void** ioLData)
 /*
  * Complex to Complex transform
  */
-void Tracter::Fourier::Init(int iOrder, complex** ioIData, complex** ioOData)
+void Tracter::Fourier::Init(
+    int iOrder, complex** ioIData, complex** ioOData, bool iInverse
+)
 {
     assert(ioIData);
     assert(ioOData);
@@ -94,8 +96,8 @@ void Tracter::Fourier::Init(int iOrder, complex** ioIData, complex** ioOData)
         Allocate<fftwf_complex, complex>(iOrder, ioIData, &m.IData);
     fftwf_complex* odata =
         Allocate<fftwf_complex, complex>(iOrder, ioOData, &m.OData);
-    m.Plan = fftwf_plan_dft_1d(iOrder, idata, odata, FFTW_FORWARD,
-                               FFTW_ESTIMATE);
+    int sign = iInverse ? FFTW_BACKWARD : FFTW_FORWARD;
+    m.Plan = fftwf_plan_dft_1d(iOrder, idata, odata, sign, FFTW_ESTIMATE);
 }
 
 
